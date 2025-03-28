@@ -1,0 +1,38 @@
+from flask import Flask, render_template, request, redirect, url_for, flash
+
+app = Flask(__name__)
+
+# Llave secreta para manejar sesiones de usuario
+app.secret_key = 'mi_clave_secreta'
+
+# Usuarios simulados para quifa.com (nombre de usuario y contraseña)
+usuarios = {
+    'usuario1': 'clave123',
+    'usuario2': 'secreta456'
+}
+
+# Página de inicio
+@app.route('/')
+def index():
+    return render_template('login.html')
+
+# Página de inicio de sesión
+@app.route('/login', methods=['POST'])
+def login():
+    username = request.form['username']
+    password = request.form['password']
+
+    # Verificar las credenciales
+    if username in usuarios and usuarios[username] == password:
+        return redirect(url_for('dashboard'))
+    else:
+        flash('Credenciales incorrectas. Inténtalo de nuevo.', 'error')
+        return redirect(url_for('index'))
+
+# Dashboard (página principal después de iniciar sesión correctamente)
+@app.route('/dashboard')
+def dashboard():
+    return render_template('dashboard.html')
+
+if __name__ == '__main__':
+    app.run(debug=True)
